@@ -212,8 +212,8 @@ body{
 } */
 
 .PinfoOverlayMain {
-    width: 50%;
-    height: 60%;
+    width: 55%;
+    /* height: %; */
     background-color: #d7d5d3;
     display: flex;
     justify-content: space-evenly;
@@ -297,7 +297,7 @@ body{
     z-index: 100000;
 }
 .PinfoOverlayCrossBtn{
-    margin-right: 5px;
+    margin-right: -20px;
     width: 50px;
     height: 50px;
     border-radius: 5px;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../stylesheets/ShowProduct.css";
 import CustomerNavBar from "../Components/CustomerNavBar";
+import { BASE_URL } from "../api";
 
 export default function ShowProduct() {
   const navigate = useNavigate();
@@ -25,30 +26,27 @@ export default function ShowProduct() {
   });
 
   const addToCart = async function () {
-    const response = await fetch(
-      "http://localhost:5000/velvethomes/customer/addtocart",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: localStorage.getItem("customerUsername"),
-          id: element._id,
-        }),
-      }
-    );
+    const response = await fetch(`${BASE_URL}/velvethomes/customer/addtocart`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: localStorage.getItem("customerUsername"),
+        id: element._id,
+      }),
+    });
     const json = await response.json();
     if (json.success) {
-      navigate("/velvethomes/cart");
+      navigate(`/velvethomes/cart`);
     } else {
-      navigate("/velvethomes/cart");
+      navigate(`/velvethomes/cart`);
     }
   };
 
   const fetchData = async function () {
     const response = await fetch(
-      "http://localhost:5000/velvethomes/customer/productdetails",
+      `${BASE_URL}/velvethomes/customer/productdetails`,
       {
         method: "POST",
         headers: {

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../stylesheets/companyLogin.css";
 import { useDispatch } from "react-redux";
 import { loginSeller } from "../features/login/loginSlice";
+import { BASE_URL } from "../api";
 
 export default function Company_Login({ show }) {
   // Variable To Redirect To any Page
@@ -105,19 +106,16 @@ export default function Company_Login({ show }) {
     evt.preventDefault();
     const val = Object.values(isValidInput).every((value) => value === true);
     if (val) {
-      const response = await fetch(
-        "http://localhost:5000/velvethomes/seller/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: compStateLogin.username,
-            password: compStateLogin.password,
-          }),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/velvethomes/seller/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: compStateLogin.username,
+          password: compStateLogin.password,
+        }),
+      });
       const json = await response.json();
       if (!json.success) {
         setWrongInput(true);
@@ -128,7 +126,7 @@ export default function Company_Login({ show }) {
         localStorage.setItem("authToken", json.authToken);
         localStorage.setItem("companyLogin", true);
         dispatch(loginSeller());
-        navigate("/velvethomes/seller/home");
+        navigate(`/velvethomes/seller/home`);
       }
     } else {
       alert("Enter All Valid Enteries");
@@ -178,7 +176,7 @@ export default function Company_Login({ show }) {
     if (val) {
       setSignupButton(false);
       const response = await fetch(
-        "http://localhost:5000/velvethomes/seller/createcomp",
+        `${BASE_URL}/velvethomes/seller/createcomp`,
         {
           method: "POST",
           headers: {
@@ -203,7 +201,7 @@ export default function Company_Login({ show }) {
         localStorage.setItem("userEmail", compStateSignup.email);
         localStorage.setItem("authToken", json.authToken);
         localStorage.setItem("companyLogin", true);
-        navigate("/velvethomes/seller/home");
+        navigate(`/velvethomes/seller/home`);
       }
     } else {
       setSignupButton(true);
@@ -225,7 +223,11 @@ export default function Company_Login({ show }) {
           <div className="btns-company-login">
             <div
               className="btn-company-login"
-              style={val === "Login" ? selectedStyle : { height: "50px",backgroundColor:"#4d4d4d" }}
+              style={
+                val === "Login"
+                  ? selectedStyle
+                  : { height: "50px", backgroundColor: "#4d4d4d" }
+              }
               onClick={() => setVal("Login")}
             >
               Sign In
@@ -364,7 +366,9 @@ export default function Company_Login({ show }) {
                       Seems Good
                     </div>
                   ) : (
-                    <div style={{ color: "red" ,fontWeight: "100"}}>Invalid Input</div>
+                    <div style={{ color: "red", fontWeight: "100" }}>
+                      Invalid Input
+                    </div>
                   )}
                 </div>
               </div>
@@ -391,14 +395,19 @@ export default function Company_Login({ show }) {
           )}
           {val === "Sign Up" && (
             <form action="" onSubmit={hadleSignupSubmit} className="clf">
-              { showRedirectedMessage && <div
-                className="input-company-wrapper"
-                style={{ marginTop: "25px" }}
-              >
-                <label className="input-clf-label" style={{color: "black" , marginTop:"20px"}}>
-                  Please SignUp To Continue Your Shopping
-                </label>
-              </div>}
+              {showRedirectedMessage && (
+                <div
+                  className="input-company-wrapper"
+                  style={{ marginTop: "25px" }}
+                >
+                  <label
+                    className="input-clf-label"
+                    style={{ color: "black", marginTop: "20px" }}
+                  >
+                    Please SignUp To Continue Your Shopping
+                  </label>
+                </div>
+              )}
               <div
                 className="input-company-wrapper"
                 style={{ marginTop: "25px" }}

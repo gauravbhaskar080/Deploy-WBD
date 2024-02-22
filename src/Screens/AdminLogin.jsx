@@ -3,6 +3,7 @@ import "../stylesheets/AdminLogin.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginAdmin } from "../features/login/loginSlice";
+import { BASE_URL } from "../api";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -13,12 +14,12 @@ export default function AdminLogin() {
     password: false,
   });
   const [loginPassword, setLoginPassword] = useState(false);
-  const [wrongInput,setWrongInput] = useState(false);
+  const [wrongInput, setWrongInput] = useState(false);
   const [compStateLogin, setCompStateLogin] = useState({
     username: "",
     password: "",
   });
-  const [showGif,setShowGif] = useState(false);
+  const [showGif, setShowGif] = useState(false);
   const handleLoginChange = (evt) => {
     setWrongInput(false);
     if (evt.target.name === "password") {
@@ -39,43 +40,38 @@ export default function AdminLogin() {
       [evt.target.name]: evt.target.value,
     });
   };
-  // Function To handle OnSubmit event of login form 
-  async function handleLoginSubmit(evt){
+  // Function To handle OnSubmit event of login form
+  async function handleLoginSubmit(evt) {
     evt.preventDefault();
-    const val = Object.values(isValidInput).every(
-      (value) => value === true
-    );
-    if(val){
-      const response = await fetch(
-        "http://localhost:5000/velvethomes/admin/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: compStateLogin.username,
-            password: compStateLogin.password
-          }),
-        }
-      );
+    const val = Object.values(isValidInput).every((value) => value === true);
+    if (val) {
+      const response = await fetch(`${BASE_URL}/velvethomes/admin/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: compStateLogin.username,
+          password: compStateLogin.password,
+        }),
+      });
       const json = await response.json();
       if (!json.success) {
         setWrongInput(true);
-        setIsValidInput({...isValidInput,"username": false,"password": false})
+        setIsValidInput({ ...isValidInput, username: false, password: false });
         setShowGif(false);
       }
       if (json.success) {
-        localStorage.setItem('adminEmail',compStateLogin.username);
-        localStorage.setItem("authTokenAdmin",json.authToken);
-        localStorage.setItem('adminLogin',true);
+        localStorage.setItem("adminEmail", compStateLogin.username);
+        localStorage.setItem("authTokenAdmin", json.authToken);
+        localStorage.setItem("adminLogin", true);
         dispatch(loginAdmin());
         setShowGif(false);
-        navigate('/velvethomes/admin/home');
+        navigate(`/velvethomes/admin/home`);
       }
-    }else{
+    } else {
       setShowGif(false);
-      alert("Enter All Valid Enteries")
+      alert("Enter All Valid Enteries");
     }
   }
   return (
@@ -206,25 +202,36 @@ export default function AdminLogin() {
               </div>
             </div>
             {wrongInput && (
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      width: "70%",
-                      fontSize: "large",
-                    }}
-                  >
-                    <div style={{ color: "red" }}>Username Or Email didn't match</div>
-                  </div>
-                )}
-              <div className="btn-clf-wrapper">
-                <button type="submit" onClick={()=>setShowGif(true)} className="btn-submit-company-login">
-                  Sign In
-                </button>
-          {showGif && <img src="https://i.gifer.com/ZZ5H.gif" className="LoaderGif" alt="" />}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  width: "70%",
+                  fontSize: "large",
+                }}
+              >
+                <div style={{ color: "red" }}>
+                  Username Or Email didn't match
+                </div>
               </div>
+            )}
+            <div className="btn-clf-wrapper">
+              <button
+                type="submit"
+                onClick={() => setShowGif(true)}
+                className="btn-submit-company-login"
+              >
+                Sign In
+              </button>
+              {showGif && (
+                <img
+                  src="https://i.gifer.com/ZZ5H.gif"
+                  className="LoaderGif"
+                  alt=""
+                />
+              )}
+            </div>
           </form>
-          
         </div>
       </div>
     </div>

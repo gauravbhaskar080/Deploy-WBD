@@ -1,6 +1,5 @@
-
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -12,41 +11,42 @@ import {
   TextField,
   Typography,
   Button,
-} from '@mui/material';
-import '../stylesheets/BNBill.css';
+} from "@mui/material";
+import "../stylesheets/BNBill.css";
 import CustomerNavBar from "../Components/CustomerNavBar";
+import { BASE_URL } from "../api";
 
 export default function BNBill() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [element, setElement] = useState({
-    title: '',
+    title: "",
     price: 0,
     quantity: 0,
-    images: '',
+    images: "",
   });
   const [qty, setQty] = useState(1);
   const [show, setShow] = useState(false);
   const [discount, setDiscount] = useState(1);
   const [showDc, setShowDc] = useState(false);
-  const [message, setMessage] = useState('This is a test message');
-  const [code, setCode] = useState('');
+  const [message, setMessage] = useState("This is a test message");
+  const [code, setCode] = useState("");
 
   const applyCode = async () => {
     if (code.length === 0) {
       setShowDc(true);
-      setMessage('Please Enter Code To Be Applied');
+      setMessage("Please Enter Code To Be Applied");
     } else {
       const response = await fetch(
-        'http://localhost:5000/velvethomes/customer/validcode',
+        `${BASE_URL}/velvethomes/customer/validcode`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             code: code,
-            username: localStorage.getItem('customerUsername'),
+            username: localStorage.getItem("customerUsername"),
           }),
         }
       );
@@ -64,24 +64,24 @@ export default function BNBill() {
 
   const placeOrder = async function () {
     const response = await fetch(
-      'http://localhost:5000/velvethomes/customer/placeorder',
+      `${BASE_URL}/velvethomes/customer/placeorder`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           id: id,
-          username: localStorage.getItem('customerUsername'),
+          username: localStorage.getItem("customerUsername"),
           quantity: qty,
           discount: discount,
-          couponcode: discount === 1 ? 'none' : code,
+          couponcode: discount === 1 ? "none" : code,
         }),
       }
     );
     const json = await response.json();
     if (json.status) {
-      navigate('/velvethomes/pinfo');
+      navigate(`/velvethomes/pinfo`);
     } else {
       alert(json.message);
     }
@@ -89,11 +89,11 @@ export default function BNBill() {
 
   const fetchData = async function () {
     const response = await fetch(
-      'http://localhost:5000/velvethomes/customer/productdetails',
+      "${BASE_URL}/velvethomes/customer/productdetails",
       {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           oid: id,
@@ -127,9 +127,9 @@ export default function BNBill() {
   };
 
   return (
-    <div className='BNB-main'>
+    <div className="BNB-main">
       <CustomerNavBar />
-      <TableContainer component={Paper} className='BNB-table'>
+      <TableContainer component={Paper} className="BNB-table">
         <Table>
           <TableHead>
             <TableRow>
@@ -144,51 +144,62 @@ export default function BNBill() {
             <TableRow>
               <TableCell>1.</TableCell>
               <TableCell>
-                <img
-                  src={element.images}
-                  className='BNB-product-img'
-                  alt=''
-                />
-                <div className='BNB-product-title' style={{textAlign:"center"}}>{element.title}</div>
+                <img src={element.images} className="BNB-product-img" alt="" />
+                <div
+                  className="BNB-product-title"
+                  style={{ textAlign: "center" }}
+                >
+                  {element.title}
+                </div>
               </TableCell>
-              <TableCell sx={{fontSize:"1.2rem"}}>{element.price}/-</TableCell>
+              <TableCell sx={{ fontSize: "1.2rem" }}>
+                {element.price}/-
+              </TableCell>
               <TableCell>
                 <TextField
-                  type='number'
-                  className='BNB-quantity-input'
+                  type="number"
+                  className="BNB-quantity-input"
                   value={qty}
                   onChange={handleChange}
-                  inputProps={{ style: { textAlign: 'center' } }}
+                  inputProps={{ style: { textAlign: "center" } }}
                 />
                 {show && (
-                  <Typography className='BNB-alert'>
+                  <Typography className="BNB-alert">
                     **Only {element.quantity} Units Available..
                   </Typography>
                 )}
               </TableCell>
-              <TableCell sx={{fontSize:"1.2rem"}}>{qty * element.price}/-</TableCell>
+              <TableCell sx={{ fontSize: "1.2rem" }}>
+                {qty * element.price}/-
+              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={3}></TableCell>
-              <TableCell sx={{fontWeight:"bold"}}>Discount :</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Discount :</TableCell>
               <TableCell>{discount} %</TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={3}></TableCell>
-              <TableCell sx={{fontWeight:"bold"}}>SubTotal :</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>SubTotal :</TableCell>
               <TableCell>Rs. {qty * element.price}/-</TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={3}></TableCell>
-              <TableCell sx={{fontWeight:"bold"}}>Discount Amount :</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>
+                Discount Amount :
+              </TableCell>
               <TableCell>
                 - Rs. {Math.ceil(discount * qty * element.price) / 100}/-
               </TableCell>
             </TableRow>
             <TableRow>
               <TableCell colSpan={3}></TableCell>
-              <TableCell sx={{fontWeight:"bold",fontSize:"large"}} >Total :</TableCell>
-              <TableCell sx={{fontWeight:"bold",color:"green",fontSize:"large"}}>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "large" }}>
+                Total :
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", color: "green", fontSize: "large" }}
+              >
                 Rs. {Math.floor((100 - discount) * qty * element.price) / 100}/-
               </TableCell>
             </TableRow>
@@ -196,42 +207,45 @@ export default function BNBill() {
         </Table>
       </TableContainer>
 
-      <div className='BNB-btn-con'>
+      <div className="BNB-btn-con">
         <TextField
-          type='text'
-          className='BNBdc'
+          type="text"
+          className="BNBdc"
           value={code}
           onChange={(evt) => {
             setShowDc(false);
             setDiscount(1);
             setCode(evt.target.value);
           }}
-          placeholder='Enter discount code'
-          inputProps={{ style: { textAlign: 'center' } }}
+          placeholder="Enter discount code"
+          inputProps={{ style: { textAlign: "center" } }}
         />
         <Button
-          className='BNBdcsearch'
+          className="BNBdcsearch"
           onClick={applyCode}
-          variant='contained'
-          style={{fontSize:"12px",backgroundColor:"black",marginTop:"15px"}}
+          variant="contained"
+          style={{
+            fontSize: "12px",
+            backgroundColor: "black",
+            marginTop: "15px",
+          }}
         >
           Check
         </Button>
       </div>
       {showDc && (
         <Typography
-          className='coupon-code-message'
-          style={{ textAlign: 'right', fontSize: '14px', color: '#3D0C11' }}
+          className="coupon-code-message"
+          style={{ textAlign: "right", fontSize: "14px", color: "#3D0C11" }}
         >
           **{message}
         </Typography>
       )}
-      <div className='BNB-btn-con'>
+      <div className="BNB-btn-con">
         <Button
-   
           onClick={placeOrder}
-          variant='contained'
-          style={{fontSize:"12px",margin:"10px",backgroundColor:"black"}}
+          variant="contained"
+          style={{ fontSize: "12px", margin: "10px", backgroundColor: "black" }}
         >
           Place Order
         </Button>

@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import "../stylesheets/companyLogin.css";
 import { useDispatch } from "react-redux";
 import { loginCustomer } from "../features/login/loginSlice";
-const CustomerLogin = ({show}) => {
+import { BASE_URL } from "../api";
+
+const CustomerLogin = ({ show }) => {
   // Variable To Redirect To any Page
   let navigate = useNavigate();
 
@@ -62,7 +64,9 @@ const CustomerLogin = ({show}) => {
   // signupButton state is Used to Show the user to fill all boxes with correct values when signUp button is clicked
   const [signupButton, setSignupButton] = useState(false);
 
-  const [showRedirectedMessage, setShowRedirectedMessage] = useState(show ? true : false);
+  const [showRedirectedMessage, setShowRedirectedMessage] = useState(
+    show ? true : false
+  );
 
   // Css Properties Which differ the buttons In Order To Show Which Form is Selected Login or SignUp
   const selectedStyle = {
@@ -98,12 +102,12 @@ const CustomerLogin = ({show}) => {
   // Function To handle OnSubmit event of login form
   async function handleLoginSubmit(evt) {
     evt.preventDefault();
-  
+
     try {
       const val = Object.values(isValidInput).every((value) => value === true);
-  
+
       if (val) {
-        const response = await fetch("http://localhost:5000/velvethomes/customer/login", {
+        const response = await fetch(`${BASE_URL}/velvethomes/customer/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -113,22 +117,26 @@ const CustomerLogin = ({show}) => {
             password: compStateLogin.password,
           }),
         });
-  
+
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-  
+
         const json = await response.json();
-  
+
         if (!json.success) {
           setWrongInput(true);
-          setIsValidInput({ ...isValidInput, username: false, password: false });
+          setIsValidInput({
+            ...isValidInput,
+            username: false,
+            password: false,
+          });
         }
-  
+
         if (json.success) {
           localStorage.setItem("customerUsername", compStateLogin.username);
           dispatch(loginCustomer());
-          navigate("/");
+          navigate(`/`);
         }
       } else {
         alert("Enter All Valid Entries");
@@ -138,7 +146,7 @@ const CustomerLogin = ({show}) => {
       // Add more detailed error handling here
     }
   }
-  
+
   // Function to handle the changes done in the SignUp Form
   const handleSignUpChange = (evt) => {
     setEmailUsed(false);
@@ -181,20 +189,17 @@ const CustomerLogin = ({show}) => {
     );
     if (val) {
       setSignupButton(false);
-      const response = await fetch(
-        "http://localhost:5000/velvethomes/customer/signup",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: compStateSignup.email,
-            password: compStateSignup.password,
-            fullname: compStateSignup.companyname,
-          }),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/velvethomes/customer/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: compStateSignup.email,
+          password: compStateSignup.password,
+          fullname: compStateSignup.companyname,
+        }),
+      });
       const json = await response.json();
       if (json.errors === "Email already used") {
         setEmailUsed(true);
@@ -205,7 +210,7 @@ const CustomerLogin = ({show}) => {
       if (json.success) {
         localStorage.setItem("customerUsername", compStateSignup.email);
         localStorage.setItem("customerLogin", true);
-        navigate("/");
+        navigate(`/`);
       }
     } else {
       setSignupButton(true);
@@ -242,14 +247,16 @@ const CustomerLogin = ({show}) => {
           </div>
           {val === "Login" && (
             <form action="" onSubmit={handleLoginSubmit} className="clf">
-              { showRedirectedMessage && <div
-                className="input-company-wrapper"
-                style={{ marginTop: "25px" }}
-              >
-                <label className="input-clf-label" style={{color: "black"}}>
-                  **Please Login To Continue Your Shopping
-                </label>
-              </div>}
+              {showRedirectedMessage && (
+                <div
+                  className="input-company-wrapper"
+                  style={{ marginTop: "25px" }}
+                >
+                  <label className="input-clf-label" style={{ color: "black" }}>
+                    **Please Login To Continue Your Shopping
+                  </label>
+                </div>
+              )}
               <div
                 className="input-company-wrapper"
                 style={{ marginTop: "25px" }}
@@ -391,20 +398,26 @@ const CustomerLogin = ({show}) => {
           )}
           {val === "Sign Up" && (
             <form action="" onSubmit={hadleSignupSubmit} className="clf">
-              { showRedirectedMessage && <div
-                className="input-company-wrapper"
-                style={{ marginTop: "25px" }}
-              >
-                <label className="input-clf-label" style={{color: "black", marginTop:"20px"}}>
-                  **Please Sign Up To Continue Your Shopping
-                </label>
-              </div>}
+              {showRedirectedMessage && (
+                <div
+                  className="input-company-wrapper"
+                  style={{ marginTop: "25px" }}
+                >
+                  <label
+                    className="input-clf-label"
+                    style={{ color: "black", marginTop: "20px" }}
+                  >
+                    **Please Sign Up To Continue Your Shopping
+                  </label>
+                </div>
+              )}
               <div
                 className="input-company-wrapper"
                 style={{ marginTop: "25px" }}
               >
                 <label htmlFor="companyname" className="input-clf-label">
-                  Enter Your Full Name : <span className="required-span">*</span>
+                  Enter Your Full Name :{" "}
+                  <span className="required-span">*</span>
                 </label>
                 <input
                   type="text"

@@ -49,26 +49,26 @@ function ResponsiveAppBar() {
 
     const handleRedirect = (page) => {
         if(page==='Tiles'){
-            navigate('/velvethomes/showprodcat/64a594174f6b05e6fe5a5545');
+            navigate(`/velvethomes/showprodcat/64a594174f6b05e6fe5a5545`);
         }
         else if(page==='Furniture'){
-            navigate('/velvethomes/showprodcat/64a5955d9b3dc77cbe74db29');
+            navigate(`/velvethomes/showprodcat/64a5955d9b3dc77cbe74db29`);
         }else if(page==='Sanitary'){
-            navigate('/velvethomes/showprodcat/64a5960c7b9dea400786c055')
+            navigate(`/velvethomes/showprodcat/64a5960c7b9dea400786c055`)
         }else if(page==='Artifacts'){
-            navigate('/velvethomes/showallprodsubcat/64aa7d3f3f89f953e9b1e8a8')
+            navigate(`/velvethomes/showallprodsubcat/64aa7d3f3f89f953e9b1e8a8`)
         }else if(page==='Paints'){
-            navigate('/velvethomes/showallprodsubcat/64aa7d3f3f89f953e9b1e8aa')
+            navigate(`/velvethomes/showallprodsubcat/64aa7d3f3f89f953e9b1e8aa`)
         }else if(page==='Cart'){
-            navigate('/velvethomes/cart')
+            navigate(`/velvethomes/cart`)
         }else if(page==='Profile'){
-            navigate('/velvethomes/pinfo')
+            navigate(`/velvethomes/pinfo`)
         }else if(page==='Login As Seller'){
-            navigate('/velvethomes/seller/login')
+            navigate(`/velvethomes/seller/login`)
         }else if(page==='Login As Admin'){
-            navigate('/velvethomes/admin/login')
+            navigate(`/velvethomes/admin/login`)
         }else if(page==='Login'){
-            navigate('/login')
+            navigate(`/login`)
         }else{
             dispatch(logout());
         }
@@ -78,11 +78,11 @@ function ResponsiveAppBar() {
         <AppBar position="static" sx={{ backgroundColor: 'grey' }}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <img src={logo} onClick={() => navigate('/')} height='70px' style={{ marginTop: '10px', cursor: 'pointer', marginBottom: '10px', borderRadius: '25%' }} alt="" />
+                    <img src={logo} onClick={() => navigate(`/`)} height='70px' style={{ marginTop: '10px', cursor: 'pointer', marginBottom: '10px', borderRadius: '25%' }} alt="" />
                     <Typography
                         variant="h6"
                         noWrap
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate(`/`)}
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
